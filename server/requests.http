@@ -37,3 +37,61 @@ Content-Type: application/json
   "email": "malaz@test.com",
   "password": "wrongpass"
 }
+
+### 5) upload photo
+POST http://localhost:5000/api/photos
+Content-Type: multipart/form-data; boundary=XBOUNDARY
+
+--XBOUNDARY
+Content-Disposition: form-data; name="userId"
+
+6af22ed156281fbe0be2aac4
+--XBOUNDARY
+Content-Disposition: form-data; name="title"
+
+My first photo
+--XBOUNDARY
+Content-Disposition: form-data; name="photo"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test.jpg
+--XBOUNDARY--
+
+### 6) get all photos
+GET http://localhost:5000/api/photos
+
+### 7) register second user
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Other",
+  "lastName": "User",
+  "email": "other@test.com",
+  "password": "123456"
+}
+
+### 8) login second user
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "other@test.com",
+  "password": "123456"
+}
+
+### 9) delete photo as a stranger (expect 403)
+DELETE http://localhost:5000/api/photos/6af235dd99517e2dd9412d9b
+Content-Type: application/json
+
+{
+  "userId": "6af2391799517e2dd9412d9c"
+}
+
+### 10) delete photo as the owner (expect 200)
+DELETE http://localhost:5000/api/photos/6af235dd99517e2dd9412d9b
+Content-Type: application/json
+
+{
+  "userId": "6af22ed156281fbe0be2aac4"
+}

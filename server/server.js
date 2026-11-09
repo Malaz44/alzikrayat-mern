@@ -19,6 +19,7 @@ app.get('/api/health', (req, res) => {
 
 // routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/photos', require('./routes/photoRoutes'));
 
 // error handler must come after all routes
 app.use(errorHandler);
@@ -33,4 +34,4 @@ mongoose
   .catch((err) => {
     console.error('MongoDB connection error:', err.message);
     process.exit(1);
-  });
+  })

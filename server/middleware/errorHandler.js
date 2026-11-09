@@ -1,4 +1,4 @@
-
+// handles any error passed with next(err)
 const errorHandler = (err, req, res, next) => {
   console.error(err);
 
@@ -13,6 +13,11 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     return res.status(400).json({ message: 'Invalid id' });
+  }
+
+  // upload errors from multer
+  if (err.name === 'MulterError') {
+    return res.status(400).json({ message: err.message });
   }
 
   res.status(err.status || 500).json({ message: err.message || 'Server error' });

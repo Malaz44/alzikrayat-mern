@@ -1,5 +1,7 @@
+const fs = require('fs');
 const Joi = require('joi');
 
+// checks req.body against a Joi schema before the controller runs
 const validate = (schema) => (req, res, next) => {
   const { error, value } = schema.validate(req.body || {}, {
     abortEarly: false,
@@ -7,6 +9,9 @@ const validate = (schema) => (req, res, next) => {
   });
 
   if (error) {
+    // if a photo was already saved, delete it
+    if (req.file) fs.unlink(req.file.path, () => {});
+
     const errors = error.details.map((d) => d.message);
     return res.status(400).json({ message: 'Validation failed', errors });
   }
@@ -32,4 +37,10 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-module.exports = { validate, registerSchema, loginSchema };
+const photoSchema = Joi.object({
+  userId: Joi.string().hex().length(24).required(),
+  title: Joi.string().trim().max(100).required(),
+  description: Joi.string().allow('').optional(),
+});
+
+module.exports = { validate, registerSchema, loginSchema, photoSchema };
