@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,13 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// routes
+app.use('/api/auth', require('./routes/authRoutes'));
+
+// error handler must come after all routes
+app.use(errorHandler);
+
+// connect to MongoDB, then start the server
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {

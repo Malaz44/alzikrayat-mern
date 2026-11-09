@@ -1,0 +1,39 @@
+### 1) register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Malaz",
+  "lastName": "Hassan",
+  "email": "malaz@test.com",
+  "password": "123456"
+}
+
+### 2) weak password (expect 400)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "weak@test.com",
+  "password": "123"
+}
+
+### 3) login correct (expect 200)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "malaz@test.com",
+  "password": "123456"
+}
+
+### 4) login wrong password (expect 401)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "malaz@test.com",
+  "password": "wrongpass"
+}
