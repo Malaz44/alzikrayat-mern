@@ -32,5 +32,5 @@ You need Node.js and a MongoDB Atlas database.
 ### 1) Start the server
 ### 2) Start the client
 ### 3) Open the app
-# student name: Malaz Hassan Siddig
+# Student Name: Malaz Hassan Siddig
 
