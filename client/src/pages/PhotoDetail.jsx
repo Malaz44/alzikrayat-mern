@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../AuthContext.jsx';
+import CommentForm from '../components/CommentForm.jsx';
 
 export default function PhotoDetail() {
   const { id } = useParams();
@@ -10,7 +11,6 @@ export default function PhotoDetail() {
 
   const [photo, setPhoto] = useState(null);
   const [comments, setComments] = useState([]);
-  const [text, setText] = useState('');
   const [error, setError] = useState('');
 
   // load the photo and its comments
@@ -26,15 +26,16 @@ export default function PhotoDetail() {
     load();
   }, [id]);
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
+  // used by CommentForm, returns true when the comment was saved
+  const handleAddComment = async (text) => {
     setError('');
     try {
       const newComment = await api.addComment(id, user._id, text);
       setComments([...comments, newComment]);
-      setText('');
+      return true;
     } catch (err) {
       setError(err.message);
+      return false;
     }
   };
 
@@ -51,7 +52,7 @@ export default function PhotoDetail() {
     if (!window.confirm('Delete this photo?')) return;
     try {
       await api.deletePhoto(id, user._id);
-      navigate('/');
+      navigate('/gallery');
     } catch (err) {
       setError(err.message);
     }
@@ -98,10 +99,7 @@ export default function PhotoDetail() {
       ))}
 
       {user ? (
-        <form className="form" onSubmit={handleAddComment}>
-          <textarea placeholder="Write a comment..." value={text} onChange={(e) => setText(e.target.value)} maxLength={500} required />
-          <button type="submit">Add comment</button>
-        </form>
+        <CommentForm onAdd={handleAddComment} />
       ) : (
         <p className="muted">Login to write a comment.</p>
       )}

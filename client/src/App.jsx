@@ -1,38 +1,20 @@
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useAuth } from './AuthContext.jsx';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import Photos from './pages/Photos.jsx';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar.jsx';
+import Home from './pages/Home.jsx';
+import Gallery from './pages/Gallery.jsx';
 import PhotoDetail from './pages/PhotoDetail.jsx';
+import LoginRegister from './pages/LoginRegister.jsx';
 
 export default function App() {
-  const { user, logout } = useAuth();
-
   return (
     <>
-      <nav className="navbar">
-        <Link to="/" className="brand">Alzikrayat</Link>
-        <div>
-          {user ? (
-            <>
-              <span>Hi, {user.firstName}</span>
-              <button onClick={logout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-            </>
-          )}
-        </div>
-      </nav>
-
+      <Navbar />
       <main className="container">
         <Routes>
-          <Route path="/" element={<Photos />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/photos/:id" element={<PhotoDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LoginRegister />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

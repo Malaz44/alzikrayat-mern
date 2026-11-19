@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../AuthContext.jsx';
+import PhotoCard from '../components/PhotoCard.jsx';
 
-export default function Photos() {
+export default function Gallery() {
   const { user } = useAuth();
   const [photos, setPhotos] = useState([]);
+  const [layout, setLayout] = useState('grid');
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
@@ -16,6 +19,8 @@ export default function Photos() {
       setPhotos(await api.getPhotos());
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,19 +72,24 @@ export default function Photos() {
 
       {error && <p className="error">{error}</p>}
 
-      <div className="grid">
+      {/* switch between grid and list display */}
+      <div className="toolbar">
+        <h2>Gallery</h2>
+        <div>
+          <button className={layout === 'grid' ? '' : 'secondary'} onClick={() => setLayout('grid')}>Grid</button>
+          <button className={layout === 'list' ? '' : 'secondary'} onClick={() => setLayout('list')}>List</button>
+        </div>
+      </div>
+
+      {loading && <p>Loading photos...</p>}
+
+      <div className={layout === 'grid' ? 'grid' : 'list'}>
         {photos.map((photo) => (
-          <Link to={`/photos/${photo._id}`} key={photo._id} className="card">
-            <img src={`/uploads/${photo.fileName}`} alt={photo.title} />
-            <h3>{photo.title}</h3>
-            <p className="muted">
-              by {photo.userId ? `${photo.userId.firstName} ${photo.userId.lastName}` : 'Unknown'}
-            </p>
-          </Link>
+          <PhotoCard key={photo._id} photo={photo} layout={layout} />
         ))}
       </div>
 
-      {photos.length === 0 && <p>No photos yet.</p>}
+      {!loading && photos.length === 0 && <p>No photos yet.</p>}
     </div>
   );
 }
