@@ -20,6 +20,7 @@ app.get('/api/health', (req, res) => {
 // routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/photos', require('./routes/photoRoutes'));
+app.use('/api', require('./routes/commentRoutes'));
 
 // error handler must come after all routes
 app.use(errorHandler);

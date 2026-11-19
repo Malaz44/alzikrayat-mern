@@ -95,3 +95,25 @@ Content-Type: application/json
 {
   "userId": "6af22ed156281fbe0be2aac4"
 }
+
+### 11) add comment
+POST http://localhost:5000/api/photos/6afec768799b8c37fb95dfb6/comments
+Content-Type: application/json
+
+{ "userId": "6af22ed156281fbe0be2aac4", "comment": "Nice photo!" }
+
+### 12) get comments of a photo
+GET http://localhost:5000/api/photos/6afec768799b8c37fb95dfb6/comments
+
+### 13) delete comment as a stranger (expect 403)
+DELETE http://localhost:5000/api/comments/6afec7c5799b8c37fb95dfb7
+Content-Type: application/json
+
+{ "userId": "6af2391799517e2dd9412d9c" }
+
+
+### 14) delete comment as the author (expect 200)
+DELETE http://localhost:5000/api/comments/6afec7c5799b8c37fb95dfb7
+Content-Type: application/json
+
+{ "userId": "6af22ed156281fbe0be2aac4" }

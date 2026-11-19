@@ -43,4 +43,9 @@ const photoSchema = Joi.object({
   description: Joi.string().allow('').optional(),
 });
 
-module.exports = { validate, registerSchema, loginSchema, photoSchema };
+const commentSchema = Joi.object({
+  userId: Joi.string().hex().length(24).required(),
+  comment: Joi.string().trim().max(500).required(),
+});
+
+module.exports = { validate, registerSchema, loginSchema, photoSchema, commentSchema };
