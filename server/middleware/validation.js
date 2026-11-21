@@ -38,14 +38,11 @@ const loginSchema = Joi.object({
 });
 
 const photoSchema = Joi.object({
-  userId: Joi.string().hex().length(24).required(),
   title: Joi.string().trim().max(100).required(),
   description: Joi.string().allow('').optional(),
 });
 
 const commentSchema = Joi.object({
-  userId: Joi.string().hex().length(24).required(),
   comment: Joi.string().trim().max(500).required(),
 });
-
 module.exports = { validate, registerSchema, loginSchema, photoSchema, commentSchema };

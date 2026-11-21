@@ -117,3 +117,26 @@ DELETE http://localhost:5000/api/comments/6afec7c5799b8c37fb95dfb7
 Content-Type: application/json
 
 { "userId": "6af22ed156281fbe0be2aac4" }
+
+### 15) login and keep the token
+# @name login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{ "email": "malaz@test.com", "password": "123456" }
+
+### 16) save the token in a variable
+@token = {{login.response.body.token}}
+
+### 17) add comment WITHOUT token (expect 401)
+POST http://localhost:5000/api/photos/6afec768799b8c37fb95dfb6/comments
+Content-Type: application/json
+
+{ "comment": "No token" }
+
+### 18) add comment WITH token (expect 201)
+POST http://localhost:5000/api/photos/6afec768799b8c37fb95dfb6/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "comment": "With token" }

@@ -34,15 +34,15 @@ const getOne = async (req, res, next) => {
   }
 };
 
-// POST /api/photos - upload a photo
+// POST /api/photos - upload a photo (req.userId comes from the token)
 const create = async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Photo file is required' });
     }
 
-    // only existing users can upload
-    const user = await User.findById(req.body.userId);
+    // the token is valid, but make sure the user still exists
+    const user = await User.findById(req.userId);
     if (!user) {
       removeFile(req.file.filename);
       return res.status(401).json({ message: 'Please login first' });
@@ -66,18 +66,13 @@ const create = async (req, res, next) => {
 // DELETE /api/photos/:id - only the owner can delete
 const remove = async (req, res, next) => {
   try {
-    const userId = req.body?.userId;
-    if (!userId) {
-      return res.status(401).json({ message: 'Please login first' });
-    }
-
     const photo = await Photo.findById(req.params.id);
     if (!photo) {
       return res.status(404).json({ message: 'Photo not found' });
     }
 
-    // ownership check
-    if (photo.userId.toString() !== userId) {
+    // ownership check: the id comes from the token, so it cannot be faked
+    if (photo.userId.toString() !== req.userId) {
       return res.status(403).json({ message: 'You can only delete your own photos' });
     }
 
