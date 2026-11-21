@@ -1,5 +1,12 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
+// create a signed token that holds only the user id
+const createToken = (user) =>
+  jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+  });
 
 const register = async (req, res, next) => {
   try {
@@ -18,9 +25,10 @@ const register = async (req, res, next) => {
       password: hashedPassword,
     });
 
-    res.status(201).json(user);
+    // return the token with the user's public profile
+    res.status(201).json({ token: createToken(user), user });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
 
@@ -38,7 +46,7 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    res.json(user);
+    res.json({ token: createToken(user), user });
   } catch (err) {
     next(err);
   }
